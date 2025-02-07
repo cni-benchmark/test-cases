@@ -11,6 +11,7 @@ spec:
     - name: client
       image: iperf3
       command: ["/bin/bash", "-euo", "pipefail", "-c"]
+      env: []
       args:
         - |-
           iperf3 --version

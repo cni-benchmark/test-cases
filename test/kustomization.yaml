@@ -1,12 +1,14 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - 01-p2sh # Pod to Headless Service
-  - 02-p2sc # Pod to ClusterIP Service
-  - 03-p2sn # Pod to NodePort Service
-
-  - 04-hp2sh # HostNetwork Pod to Headless Service 
-  - 05-hp2sc # HostNetwork Pod to ClusterIP Service 
-  - 06-hp2sn # HostNetwork Pod to NodePort Service 
+  - tcp # TCP traffic
+  - udp # UDP traffic
 components:
   - lib/images
+  - lib/delete-replacements-cm
+labels:
+  - includeSelectors: true
+    includeTemplates: true
+    pairs:
+      app.kubernetes.io/name: cni-benchmark
+      app.kubernetes.io/instance: cni-benchmark
