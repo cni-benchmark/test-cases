@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: client
+  labels:
+    iperf3: client
+spec:
+  restartPolicy: Never
+  initContainers: []
+  containers:
+    - name: client
+      image: iperf3
+      command: ["/bin/bash", "-euo", "pipefail", "-c"]
+      args:
+        - |-
+          iperf3 --version
+          iperf3 --client=server --port=5201 ${IPERF3_ARGS:-}

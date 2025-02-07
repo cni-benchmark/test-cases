@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: server
+  labels:
+    iperf3: server
+spec:
+  containers:
+    - name: server
+      image: iperf3
+      command: ["/bin/bash", "-euo", "pipefail", "-c"]
+      args:
+        - |-
+          iperf3 --version
+          iperf3 --server --port=5201
+      startupProbe:
+        periodSeconds: 1
+        tcpSocket:
+          port: tcp
+      ports:
+        - name: tcp
+          containerPort: 5201
+          protocol: TCP
+        - name: udp
+          containerPort: 5201
+          protocol: UDP

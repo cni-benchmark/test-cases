@@ -1,0 +1,23 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: 04-hp2sh
+resources:
+  - ../lib/namespace-client-server
+patches:
+  - target:
+      kind: Pod
+      name: client
+    patch: |-
+      - op: replace
+        path: /spec/hostNetwork
+        value: true
+      - op: replace
+        path: /spec/dnsPolicy
+        value: ClusterFirstWithHostNet
+  - target:
+      kind: Service
+      name: server
+    patch: |-
+      - op: replace
+        path: /spec/clusterIP
+        value: None
