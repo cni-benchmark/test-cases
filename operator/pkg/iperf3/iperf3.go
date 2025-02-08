@@ -111,6 +111,11 @@ func Analyze(cfg *config.Config, report *Report) error {
 	// Create a Prometheus Pusher
 	pusher := push.New(cfg.PushGateway.Url.String(), cfg.PushGateway.JobName)
 
+	// Configure basic auth
+	if password, isSet := cfg.PushGateway.Url.User.Password(); isSet {
+		pusher.BasicAuth(cfg.PushGateway.Url.User.Username(), password)
+	}
+
 	// Create metrics
 	type HelpAndValue struct {
 		Help  string
