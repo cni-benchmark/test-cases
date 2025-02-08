@@ -10,4 +10,3 @@
     args:
       - |-
         kubectl wait pod -l iperf3=server --for=condition=Ready=true --timeout=60s 1>/dev/null
-

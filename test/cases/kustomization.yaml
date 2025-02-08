@@ -7,4 +7,3 @@ resources:
   - 04-hp2sh # HostNetwork Pod to Headless Service 
   - 05-hp2sc # HostNetwork Pod to ClusterIP Service 
   - 06-hp2sn # HostNetwork Pod to NodePort Service 
-

@@ -3,5 +3,3 @@ kind: Kustomization
 namespace: -02-p2sc
 resources:
   - ../../lib/namespace-client-server
-
-

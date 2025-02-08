@@ -15,9 +15,6 @@ func Build() (*Config, error) {
 		Port:  5201,
 		Lease: Lease{Namespace: "default", Name: "cni-benchmark"},
 		Args:  Args{"--json": ""},
-		InfluxDB: InfluxDB{
-			Bucket: "cni-benchmark",
-		},
 	}
 
 	// Automatically read environment variables
