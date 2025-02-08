@@ -21,10 +21,12 @@ var _ = Describe("iperf3", func() {
 	var cfg *config.Config
 	var err error
 	env := map[string]string{
-		"MODE":            "client",
-		"SERVER":          "example.com",
-		"PORT":            "80",
-		"PUSHGATEWAY_URL": "http://stub.com",
+		"MODE":           "client",
+		"SERVER":         "example.com",
+		"PORT":           "80",
+		"INFLUXDB_URL":   "http://stub.com",
+		"INFLUXDB_TOKEN": "stub",
+		"INFLUXDB_ORG":   "stub",
 	}
 
 	BeforeEach(func() {

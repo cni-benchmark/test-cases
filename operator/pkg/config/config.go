@@ -15,9 +15,8 @@ func Build() (*Config, error) {
 		Port:  5201,
 		Lease: Lease{Namespace: "default", Name: "cni-benchmark"},
 		Args:  Args{"--json": ""},
-		PushGateway: PushGateway{
-			JobName:   "cni-benchmark",
-			Namespace: "cni_benchmark",
+		InfluxDB: InfluxDB{
+			Bucket: "cni-benchmark",
 		},
 	}
 
@@ -31,14 +30,25 @@ func Build() (*Config, error) {
 			DecodeMode,
 			DecodeServer,
 			DecodeURL,
-			DecodeLabels,
+			DecodeInfluxDBTags,
 		),
 	)); err != nil {
 		return nil, fmt.Errorf("unable to unmarshal config into struct: %w", err)
 	}
 
-	if cfg.PushGateway.Url == nil {
-		return nil, fmt.Errorf("PushGateway URL is not set")
+	// Check mandatory configuration fields are set
+	for name, test := range map[string]struct {
+		Value   any
+		Compare any
+	}{
+		"InfluxDB URL":          {cfg.InfluxDB.Url, nil},
+		"InfluxDB Token":        {cfg.InfluxDB.Token, ""},
+		"InfluxDB Organization": {cfg.InfluxDB.Org, ""},
+		"InfluxDB Bucket":       {cfg.InfluxDB.Bucket, ""},
+	} {
+		if test.Value == test.Compare {
+			return nil, fmt.Errorf("%s is not set", name)
+		}
 	}
 
 	// Return nil if everything went fine

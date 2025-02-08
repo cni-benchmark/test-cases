@@ -14,8 +14,8 @@ import (
 	"time"
 
 	"github.com/docker/docker/pkg/parsers/kernel"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/push"
+	influxdb2 "github.com/influxdata/influxdb-client-go/v2"
+	influxdb2api "github.com/influxdata/influxdb-client-go/v2/api"
 )
 
 // WaitForServer attempts to establish a TCP connection to the server with a timeout
@@ -106,126 +106,107 @@ func Run() (report *Report, err error) {
 	return
 }
 
-// Analyze JSON output and push metrics to Prometheus PushGateway
+// Analyze JSON output and write metrics to InfluxDB
 func Analyze(cfg *config.Config, report *Report) error {
-	// Create a Prometheus Pusher
-	pusher := push.New(cfg.PushGateway.Url.String(), cfg.PushGateway.JobName)
+	// Create an InfluxDB client
+	client := influxdb2.NewClient(cfg.InfluxDB.Url.String(), cfg.InfluxDB.Token)
+	defer client.Close()
 
-	// Configure basic auth
-	if password, isSet := cfg.PushGateway.Url.User.Password(); isSet {
-		pusher.BasicAuth(cfg.PushGateway.Url.User.Username(), password)
+	// Get non-blocking write client
+	writeAPI := client.WriteAPIBlocking(cfg.InfluxDB.Org, cfg.InfluxDB.Bucket)
+
+	// Common tags for all measurements
+	tags := map[string]string{
+		"iperf3_version": report.Start.Version,
+		"kernel_arch":    report.System.Architecture,
+		"kernel_version": report.System.KernelVersion,
+		"protocol":       report.Start.Test.Protocol,
 	}
 
-	// Create metrics
-	type Metric struct {
-		Help  string
-		Value float64
+	// Add custom tags from config
+	for key, value := range cfg.InfluxDB.Tags {
+		tags[key] = value
 	}
 
-	gauges := map[string]map[string]Metric{
-		"tx": {
-			"bandwidth_bps_average": {
-				Help:  "Average transmit bandwidth in bits per second",
-				Value: report.End.Sent.BitsPerSecond,
-			},
-			"bytes_sent_total": {
-				Help:  "Total bytes sent",
-				Value: float64(report.End.Sent.Bytes),
-			},
-			"duration_seconds_total": {
-				Help:  "Transmission duration in seconds",
-				Value: report.End.Sent.DurationSeconds,
-			},
-			"retransmits_total": {
-				Help:  "Number of retransmits",
-				Value: float64(report.End.Sent.Retransmits),
-			},
+	// Write summary metrics
+	if err := writeSummaryMetrics(writeAPI, report, tags); err != nil {
+		return fmt.Errorf("failed to write summary metrics: %w", err)
+	}
+
+	// Write interval metrics
+	if err := writeIntervalMetrics(writeAPI, report, tags); err != nil {
+		return fmt.Errorf("failed to write interval metrics: %w", err)
+	}
+
+	log.Println("Metrics successfully written to InfluxDB")
+	return nil
+}
+
+func writeSummaryMetrics(writeAPI influxdb2api.WriteAPIBlocking, report *Report, tags map[string]string) error {
+	// Calculate timestamp from report start time
+	timestamp := time.Unix(int64(report.Start.Timestamp.Seconds), 0)
+
+	// Transmit metrics
+	txPoint := influxdb2.NewPoint(
+		"iperf3_summary",
+		tags,
+		map[string]interface{}{
+			"tx_bandwidth_bps":    report.End.Sent.BitsPerSecond,
+			"tx_bytes":            report.End.Sent.Bytes,
+			"tx_duration_seconds": report.End.Sent.DurationSeconds,
+			"tx_retransmits":      report.End.Sent.Retransmits,
 		},
-		"rx": {
-			"bandwidth_bps_average": {
-				Help:  "Average receive bandwidth in bits per second",
-				Value: report.End.Received.BitsPerSecond,
-			},
-			"bytes_received_total": {
-				Help:  "Total bytes received",
-				Value: float64(report.End.Received.Bytes),
-			},
-			"duration_seconds_total": {
-				Help:  "Receive duration in seconds",
-				Value: report.End.Received.DurationSeconds,
-			},
+		timestamp,
+	)
+
+	if err := writeAPI.WritePoint(context.Background(), txPoint); err != nil {
+		return fmt.Errorf("failed to write tx summary metrics: %w", err)
+	}
+
+	// Receive metrics
+	rxPoint := influxdb2.NewPoint(
+		"iperf3_summary",
+		tags,
+		map[string]interface{}{
+			"rx_bandwidth_bps":    report.End.Received.BitsPerSecond,
+			"rx_bytes":            report.End.Received.Bytes,
+			"rx_duration_seconds": report.End.Received.DurationSeconds,
 		},
+		timestamp,
+	)
+
+	if err := writeAPI.WritePoint(context.Background(), rxPoint); err != nil {
+		return fmt.Errorf("failed to write rx summary metrics: %w", err)
 	}
 
-	for direction, metrics := range gauges {
-		for name, spec := range metrics {
-			gauge := prometheus.NewGauge(prometheus.GaugeOpts{
-				Name:      fmt.Sprintf("%s%s_%s", cfg.PushGateway.Prefix, direction, name),
-				Help:      spec.Help,
-				Namespace: cfg.PushGateway.Namespace,
-			})
-			gauge.Set(spec.Value)
-			pusher.Collector(gauge)
-		}
-	}
+	return nil
+}
 
-	type IntervalMetric struct {
-		Help      string
-		ValueFunc func(Interval) float64
-	}
-
-	intervalGauges := map[string]map[string]IntervalMetric{
-		"interval": {
-			"bandwidth_bps": {
-				Help:      "Transmit bandwidth in bits per second",
-				ValueFunc: func(i Interval) float64 { return i.Sum.BitsPerSecond },
-			},
-			"bytes_sent": {
-				Help:      "Bytes sent during the interval",
-				ValueFunc: func(i Interval) float64 { return float64(i.Sum.Bytes) },
-			},
-			"duration_seconds": {
-				Help:      "Interval duration in seconds",
-				ValueFunc: func(i Interval) float64 { return i.Sum.DurationSeconds },
-			},
-			"retransmits": {
-				Help:      "Number of retransmits during the interval",
-				ValueFunc: func(i Interval) float64 { return float64(i.Sum.Retransmits) },
-			},
-		},
-	}
+func writeIntervalMetrics(writeAPI influxdb2api.WriteAPIBlocking, report *Report, tags map[string]string) error {
+	baseTime := time.Unix(int64(report.Start.Timestamp.Seconds), 0)
 
 	for _, interval := range report.Intervals {
-		for direction, metrics := range intervalGauges {
-			for name, spec := range metrics {
-				gauge := prometheus.NewGauge(prometheus.GaugeOpts{
-					Name:      fmt.Sprintf("%s%s_%s", cfg.PushGateway.Prefix, direction, name),
-					Help:      spec.Help,
-					Namespace: cfg.PushGateway.Namespace,
-				})
-				gauge.Set(spec.ValueFunc(interval)) // how to set timestamp?
-				pusher.Collector(gauge)
-			}
+		// Calculate timestamp for this interval
+		intervalStart := baseTime.Add(time.Duration(interval.Sum.Start * float64(time.Second)))
+
+		point := influxdb2.NewPoint(
+			"iperf3_interval",
+			tags,
+			map[string]interface{}{
+				"bandwidth_bps":    interval.Sum.BitsPerSecond,
+				"bytes":            interval.Sum.Bytes,
+				"duration_seconds": interval.Sum.DurationSeconds,
+				"retransmits":      interval.Sum.Retransmits,
+				"interval_start":   interval.Sum.Start,
+				"interval_end":     interval.Sum.End,
+			},
+			intervalStart,
+		)
+
+		if err := writeAPI.WritePoint(context.Background(), point); err != nil {
+			return fmt.Errorf("failed to write interval metrics: %w", err)
 		}
 	}
 
-	// Add labels for additional context
-	pusher.
-		Grouping("iperf3_version", report.Start.Version).
-		Grouping("kernel_arch", report.System.Architecture).
-		Grouping("kernel_version", report.System.KernelVersion).
-		Grouping("protocol", report.Start.Test.Protocol)
-
-	// Add extra labels
-	for key, value := range cfg.PushGateway.Labels {
-		pusher.Grouping(key, value)
-	}
-
-	// Push metrics to PushGateway
-	if err := pusher.Push(); err != nil {
-		return fmt.Errorf("could not push metrics to PushGateway: %v", err)
-	}
-
-	log.Println("Metrics successfully pushed to Prometheus PushGateway")
 	return nil
 }

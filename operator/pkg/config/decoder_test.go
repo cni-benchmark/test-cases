@@ -4,11 +4,11 @@ import (
 	"net/url"
 	"reflect"
 
+	"cni-benchmark/pkg/config"
 	. "cni-benchmark/pkg/config"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"github.com/prometheus/client_golang/prometheus"
 )
 
 var _ = Describe("Decoder", func() {
@@ -89,7 +89,7 @@ var _ = Describe("Decoder", func() {
 		})
 	})
 
-	Context("PushGateway", func() {
+	Context("URL", func() {
 		It("should decode valid URL", func() {
 			for input, expected := range map[string]*url.URL{
 				"http://localhost:1234": {Scheme: "http", Host: "localhost:1234"},
@@ -118,12 +118,12 @@ var _ = Describe("Decoder", func() {
 		})
 	})
 
-	Context("Labels", func() {
+	Context("InfluxDBTags", func() {
 		It("should decode valid YAML", func() {
-			for input, expected := range map[string]prometheus.Labels{
+			for input, expected := range map[string]config.InfluxDBTags{
 				"a: b\nc: d": {"a": "b", "c": "d"},
 			} {
-				output, err := DecodeLabels(reflect.TypeOf(input), reflect.TypeOf(expected), input)
+				output, err := DecodeInfluxDBTags(reflect.TypeOf(input), reflect.TypeOf(expected), input)
 				Expect(err).ToNot(HaveOccurred())
 				Expect(output).To(Equal(expected))
 			}
@@ -136,7 +136,7 @@ var _ = Describe("Decoder", func() {
 				[]map[string]string{{"a": "b"}},
 				true, 3.14,
 			} {
-				_, err := DecodeLabels(reflect.TypeOf(input), reflect.TypeFor[prometheus.Labels](), input)
+				_, err := DecodeInfluxDBTags(reflect.TypeOf(input), reflect.TypeFor[config.InfluxDBTags](), input)
 				Expect(err).To(HaveOccurred())
 			}
 		})

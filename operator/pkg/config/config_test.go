@@ -4,11 +4,11 @@ import (
 	"os"
 	"testing"
 
+	"cni-benchmark/pkg/config"
 	. "cni-benchmark/pkg/config"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"github.com/prometheus/client_golang/prometheus"
 )
 
 func TestConfig(t *testing.T) {
@@ -20,17 +20,17 @@ var _ = Describe("Configuration", func() {
 	var cfg *Config
 	var err error
 	env := map[string]string{
-		"MODE":                  "client",
-		"SERVER":                "example.com",
-		"PORT":                  "80",
-		"LEASE_NAME":            "test",
-		"LEASE_NAMESPACE":       "test",
-		"PUSHGATEWAY_URL":       "http://username:password@example.com/path",
-		"PUSHGATEWAY_JOB_NAME":  "test",
-		"PUSHGATEWAY_PREFIX":    "test",
-		"PUSHGATEWAY_NAMESPACE": "test",
-		"PUSHGATEWAY_LABELS":    "some: label\nanother: one",
-		"ARGS":                  "--help: ''\nkey: value",
+		"MODE":            "client",
+		"SERVER":          "example.com",
+		"PORT":            "80",
+		"LEASE_NAME":      "test",
+		"LEASE_NAMESPACE": "test",
+		"INFLUXDB_URL":    "http://example.com/path",
+		"INFLUXDB_TOKEN":  "test-token",
+		"INFLUXDB_ORG":    "test-org",
+		"INFLUXDB_BUCKET": "test-bucket",
+		"INFLUXDB_TAGS":   "some: tag\nanother: one",
+		"ARGS":            "--help: ''\nkey: value",
 	}
 
 	BeforeEach(func() {
@@ -54,17 +54,13 @@ var _ = Describe("Configuration", func() {
 		Expect(cfg.Port).To(Equal(uint16(80)))
 		Expect(cfg.Lease.Namespace).To(Equal("test"))
 		Expect(cfg.Lease.Name).To(Equal("test"))
-		Expect(cfg.PushGateway.Url.Scheme).To(Equal("http"))
-		Expect(cfg.PushGateway.Url.Host).To(Equal("example.com"))
-		Expect(cfg.PushGateway.Url.User.Username()).To(Equal("username"))
-		password, set := cfg.PushGateway.Url.User.Password()
-		Expect(password).To(Equal("password"))
-		Expect(set).To(BeTrue())
-		Expect(cfg.PushGateway.Url.Path).To(Equal("/path"))
-		Expect(cfg.PushGateway.JobName).To(Equal("test"))
-		Expect(cfg.PushGateway.Prefix).To(Equal("test"))
-		Expect(cfg.PushGateway.Namespace).To(Equal("test"))
-		Expect(cfg.PushGateway.Labels).To(Equal(prometheus.Labels{"some": "label", "another": "one"}))
+		Expect(cfg.InfluxDB.Url.Scheme).To(Equal("http"))
+		Expect(cfg.InfluxDB.Url.Host).To(Equal("example.com"))
+		Expect(cfg.InfluxDB.Url.Path).To(Equal("/path"))
+		Expect(cfg.InfluxDB.Token).To(Equal("test-token"))
+		Expect(cfg.InfluxDB.Org).To(Equal("test-org"))
+		Expect(cfg.InfluxDB.Bucket).To(Equal("test-bucket"))
+		Expect(cfg.InfluxDB.Tags).To(Equal(config.InfluxDBTags{"some": "tag", "another": "one"}))
 		Expect(cfg.Args).To(Equal(Args{"--json": "", "--help": "", "key": "value"}))
 	})
 })

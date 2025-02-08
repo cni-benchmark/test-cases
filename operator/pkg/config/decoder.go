@@ -8,7 +8,6 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/prometheus/client_golang/prometheus"
 	"gopkg.in/yaml.v3"
 )
 
@@ -93,26 +92,26 @@ func DecodeURL(f reflect.Type, t reflect.Type, data any) (any, error) {
 	return parsedURL, nil
 }
 
-func DecodeLabels(f reflect.Type, t reflect.Type, data any) (any, error) {
-	if t != reflect.TypeFor[prometheus.Labels]() {
+func DecodeInfluxDBTags(f reflect.Type, t reflect.Type, data any) (any, error) {
+	if t != reflect.TypeFor[InfluxDBTags]() {
 		return data, nil
 	}
 	switch f {
 	case reflect.TypeFor[string]():
-		var rawLabels map[string]any
-		if err := yaml.Unmarshal([]byte(data.(string)), &rawLabels); err != nil {
+		var rawTags map[string]any
+		if err := yaml.Unmarshal([]byte(data.(string)), &rawTags); err != nil {
 			return nil, fmt.Errorf("failed to unmarshal args YAML: %w", err)
 		}
-		labels := prometheus.Labels{}
-		for key, value := range rawLabels {
+		tags := InfluxDBTags{}
+		for key, value := range rawTags {
 			str, ok := value.(string)
 			if !ok {
 				return nil, fmt.Errorf("all values must be of type string, but key %s has non string value: %v", key, value)
 			}
-			labels[key] = str
+			tags[key] = str
 		}
-		return labels, nil
+		return tags, nil
 	default:
-		return nil, fmt.Errorf("unsupported labels type: %T", data)
+		return nil, fmt.Errorf("unsupported tags type: %T", data)
 	}
 }
