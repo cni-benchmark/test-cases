@@ -26,5 +26,5 @@ type Report struct {
 type ReportEndSum struct {
 	DurationSeconds float64 `json:"seconds"`
 	Bytes           uint64  `json:"bytes"`
-	BitsPerSecond   float64 `json:"bytes_per_second"`
+	BitsPerSecond   float64 `json:"bits_per_second"`
 }

@@ -56,9 +56,9 @@ func main() {
 	leaderConfig := leaderelection.LeaderElectionConfig{
 		Lock:            lock,
 		ReleaseOnCancel: true,
-		LeaseDuration:   15 * time.Second,
-		RenewDeadline:   10 * time.Second,
-		RetryPeriod:     2 * time.Second,
+		LeaseDuration:   10 * time.Second,
+		RenewDeadline:   5 * time.Second,
+		RetryPeriod:     time.Second,
 		Callbacks: leaderelection.LeaderCallbacks{
 			OnStartedLeading: func(ctx context.Context) {
 				log.Printf("Got leadership, starting benchmark")

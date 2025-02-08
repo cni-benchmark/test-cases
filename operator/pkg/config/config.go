@@ -11,11 +11,14 @@ import (
 // Build initializes the Config by loading from environment variables.
 func Build() (*Config, error) {
 	cfg := &Config{
-		viper:       viper.NewWithOptions(viper.EnvKeyReplacer(&envReplacer{})),
-		Port:        5201,
-		Lease:       Lease{Namespace: "default", Name: "cni-benchmark"},
-		Args:        Args{"--json": ""},
-		PushGateway: PushGateway{Namespace: "cni_benchmark"},
+		viper: viper.NewWithOptions(viper.EnvKeyReplacer(&envReplacer{})),
+		Port:  5201,
+		Lease: Lease{Namespace: "default", Name: "cni-benchmark"},
+		Args:  Args{"--json": ""},
+		PushGateway: PushGateway{
+			JobName:   "cni-benchmark",
+			Namespace: "cni_benchmark",
+		},
 	}
 
 	// Automatically read environment variables
