@@ -10,7 +10,7 @@ patches:
       - op: add
         path: /spec/containers/0/env/-
         value:
-          name: IPERF3_ARGS
+          name: ARGS
           value: --udp
 configMapGenerator:
   - name: _

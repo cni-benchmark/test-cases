@@ -12,7 +12,7 @@ spec:
       args:
         - |-
           iperf3 --version
-          iperf3 --server --port=5201
+          iperf3 --server --port=${PORT:-5201} ${ARGS:-}
       startupProbe:
         periodSeconds: 1
         tcpSocket:

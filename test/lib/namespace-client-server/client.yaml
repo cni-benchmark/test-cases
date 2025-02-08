@@ -15,4 +15,4 @@ spec:
       args:
         - |-
           iperf3 --version
-          iperf3 --client=server --port=5201 ${IPERF3_ARGS:-}
+          iperf3 --client=${SERVER:-server} --port=${PORT:-5201} ${ARGS:-}
