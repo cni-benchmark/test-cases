@@ -14,17 +14,27 @@ type Report struct {
 			Protocol string `json:"protocol"`
 		} `json:"test_start"`
 	} `json:"start"`
-	End struct {
+	Intervals []Interval `json:"intervals"`
+	End       struct {
 		Sent struct {
-			ReportEndSum
+			ReportSum
 			Retransmits uint64 `json:"retransmits"`
 		} `json:"sum_sent"`
-		Received ReportEndSum `json:"sum_received"`
+		Received ReportSum `json:"sum_received"`
 	} `json:"end"`
 }
 
-type ReportEndSum struct {
+type ReportSum struct {
 	DurationSeconds float64 `json:"seconds"`
 	Bytes           uint64  `json:"bytes"`
 	BitsPerSecond   float64 `json:"bits_per_second"`
+}
+
+type Interval struct {
+	Sum struct {
+		Start       float64 `json:"start"`
+		End         float64 `json:"end"`
+		Retransmits uint64  `json:"retransmits"`
+		ReportSum
+	} `json:"sum"`
 }

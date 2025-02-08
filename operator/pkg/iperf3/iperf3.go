@@ -117,40 +117,40 @@ func Analyze(cfg *config.Config, report *Report) error {
 	}
 
 	// Create metrics
-	type HelpAndValue struct {
+	type Metric struct {
 		Help  string
 		Value float64
 	}
 
-	gauges := map[string]map[string]HelpAndValue{
+	gauges := map[string]map[string]Metric{
 		"tx": {
-			"bandwidth_bps": {
-				Help:  "Transmit bandwidth in bits per second",
+			"bandwidth_bps_average": {
+				Help:  "Average transmit bandwidth in bits per second",
 				Value: report.End.Sent.BitsPerSecond,
 			},
-			"total_bytes": {
+			"bytes_sent_total": {
 				Help:  "Total bytes sent",
 				Value: float64(report.End.Sent.Bytes),
 			},
-			"duration_seconds": {
+			"duration_seconds_total": {
 				Help:  "Transmission duration in seconds",
 				Value: report.End.Sent.DurationSeconds,
 			},
-			"retransmits": {
+			"retransmits_total": {
 				Help:  "Number of retransmits",
 				Value: float64(report.End.Sent.Retransmits),
 			},
 		},
 		"rx": {
-			"bandwidth_bps": {
-				Help:  "Receive bandwidth in bits per second",
+			"bandwidth_bps_average": {
+				Help:  "Average receive bandwidth in bits per second",
 				Value: report.End.Received.BitsPerSecond,
 			},
-			"total_bytes": {
+			"bytes_received_total": {
 				Help:  "Total bytes received",
 				Value: float64(report.End.Received.Bytes),
 			},
-			"duration_seconds": {
+			"duration_seconds_total": {
 				Help:  "Receive duration in seconds",
 				Value: report.End.Received.DurationSeconds,
 			},
@@ -166,6 +166,46 @@ func Analyze(cfg *config.Config, report *Report) error {
 			})
 			gauge.Set(spec.Value)
 			pusher.Collector(gauge)
+		}
+	}
+
+	type IntervalMetric struct {
+		Help      string
+		ValueFunc func(Interval) float64
+	}
+
+	intervalGauges := map[string]map[string]IntervalMetric{
+		"interval": {
+			"bandwidth_bps": {
+				Help:      "Transmit bandwidth in bits per second",
+				ValueFunc: func(i Interval) float64 { return i.Sum.BitsPerSecond },
+			},
+			"bytes_sent": {
+				Help:      "Bytes sent during the interval",
+				ValueFunc: func(i Interval) float64 { return float64(i.Sum.Bytes) },
+			},
+			"duration_seconds": {
+				Help:      "Interval duration in seconds",
+				ValueFunc: func(i Interval) float64 { return i.Sum.DurationSeconds },
+			},
+			"retransmits": {
+				Help:      "Number of retransmits during the interval",
+				ValueFunc: func(i Interval) float64 { return float64(i.Sum.Retransmits) },
+			},
+		},
+	}
+
+	for _, interval := range report.Intervals {
+		for direction, metrics := range intervalGauges {
+			for name, spec := range metrics {
+				gauge := prometheus.NewGauge(prometheus.GaugeOpts{
+					Name:      fmt.Sprintf("%s%s_%s", cfg.PushGateway.Prefix, direction, name),
+					Help:      spec.Help,
+					Namespace: cfg.PushGateway.Namespace,
+				})
+				gauge.Set(spec.ValueFunc(interval)) // how to set timestamp?
+				pusher.Collector(gauge)
+			}
 		}
 	}
 
