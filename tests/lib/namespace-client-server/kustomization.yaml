@@ -5,3 +5,4 @@ resources:
   - client.yaml
   - server.yaml
   - service.yaml
+  - rbac.yaml

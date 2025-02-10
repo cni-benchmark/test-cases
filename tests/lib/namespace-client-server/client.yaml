@@ -6,6 +6,9 @@ metadata:
     mode: client
 spec:
   restartPolicy: Never
+  serviceAccountName: client
+  enableServiceLinks: false
+  automountServiceAccountToken: true
   containers:
     - name: client
       image: operator
