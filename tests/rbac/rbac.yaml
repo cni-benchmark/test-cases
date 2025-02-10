@@ -1,0 +1,54 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: lease-manager
+rules:
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: client
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: lease-manager
+subjects:
+  - kind: ServiceAccount
+    name: client
+    namespace: tcp-01-p2sh
+  - kind: ServiceAccount
+    name: client
+    namespace: tcp-02-p2sc
+  - kind: ServiceAccount
+    name: client
+    namespace: tcp-03-p2sn
+  - kind: ServiceAccount
+    name: client
+    namespace: tcp-04-hp2sh
+  - kind: ServiceAccount
+    name: client
+    namespace: tcp-05-hp2sc
+  - kind: ServiceAccount
+    name: client
+    namespace: tcp-06-hp2sn
+  - kind: ServiceAccount
+    name: client
+    namespace: udp-01-p2sh
+  - kind: ServiceAccount
+    name: client
+    namespace: udp-02-p2sc
+  - kind: ServiceAccount
+    name: client
+    namespace: udp-03-p2sn
+  - kind: ServiceAccount
+    name: client
+    namespace: udp-04-hp2sh
+  - kind: ServiceAccount
+    name: client
+    namespace: udp-05-hp2sc
+  - kind: ServiceAccount
+    name: client
+    namespace: udp-06-hp2sn

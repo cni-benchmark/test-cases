@@ -25,6 +25,7 @@ replacements:
       - select: {}
         reject:
           - kind: Namespace
+          - kind: ClusterRoleBinding
         fieldPaths:
           - .metadata.namespace
         options:
