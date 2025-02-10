@@ -11,10 +11,11 @@ type Config struct {
 	viper    *viper.Viper `json:"-" yaml:"-"`
 	Lease    Lease        `mapstructure:"lease"`
 	InfluxDB InfluxDB     `mapstructure:"influxdb"`
-	Server   Address      `mapstructure:"server"`
-	Args     Args         `mapstructure:"args"`
-	Port     uint16       `mapstructure:"port"`
-	Mode     Mode         `mapstructure:"mode"`
+	Command  []string
+	Server   Address `mapstructure:"server"`
+	Args     Args    `mapstructure:"args"`
+	Port     uint16  `mapstructure:"port"`
+	Mode     Mode    `mapstructure:"mode"`
 }
 
 type InfluxDB struct {

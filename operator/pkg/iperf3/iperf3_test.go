@@ -59,28 +59,4 @@ var _ = Describe("iperf3", func() {
 			Expect(err).To(HaveOccurred())
 		})
 	})
-
-	Context("BuildIperf3Command", func() {
-		It("should display help and exit without error", func() {
-			cfg.Args["--help"] = ""
-			cmd, err := iperf3.BuildIperf3Command(cfg)
-			Expect(err).ToNot(HaveOccurred())
-			Expect(cmd).ToNot(BeNil())
-			stdout, err := cmd.Output()
-			Expect(err).ToNot(HaveOccurred())
-			Expect(string(stdout)).To(ContainSubstring("iperf3 homepage at"))
-		})
-	})
-
-	Context("BuildIperf3Command", func() {
-		It("should display help and exit without error", func() {
-			cfg.Args["--help"] = ""
-			cmd, err := iperf3.BuildIperf3Command(cfg)
-			Expect(err).ToNot(HaveOccurred())
-			Expect(cmd).ToNot(BeNil())
-			stdout, err := cmd.Output()
-			Expect(err).ToNot(HaveOccurred())
-			Expect(string(stdout)).To(ContainSubstring("iperf3 homepage at"))
-		})
-	})
 })

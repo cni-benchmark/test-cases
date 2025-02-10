@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/mitchellh/mapstructure"
@@ -11,10 +12,11 @@ import (
 // Build initializes the Config by loading from environment variables.
 func Build() (*Config, error) {
 	cfg := &Config{
-		viper: viper.NewWithOptions(viper.EnvKeyReplacer(&envReplacer{})),
-		Port:  5201,
-		Lease: Lease{Namespace: "default", Name: "cni-benchmark"},
-		Args:  Args{"--json": ""},
+		viper:   viper.NewWithOptions(viper.EnvKeyReplacer(&envReplacer{})),
+		Port:    5201,
+		Lease:   Lease{Namespace: "default", Name: "cni-benchmark"},
+		Args:    Args{},
+		Command: []string{"iperf3"},
 	}
 
 	// Automatically read environment variables
@@ -33,19 +35,33 @@ func Build() (*Config, error) {
 		return nil, fmt.Errorf("unable to unmarshal config into struct: %w", err)
 	}
 
-	// Check mandatory configuration fields are set
-	for name, test := range map[string]struct {
-		Value   any
-		Compare any
-	}{
-		"InfluxDB URL":          {cfg.InfluxDB.Url, nil},
-		"InfluxDB Token":        {cfg.InfluxDB.Token, ""},
-		"InfluxDB Organization": {cfg.InfluxDB.Org, ""},
-		"InfluxDB Bucket":       {cfg.InfluxDB.Bucket, ""},
-	} {
-		if test.Value == test.Compare {
-			return nil, fmt.Errorf("%s is not set", name)
+	// Set some arguments and check mandatory configuration fields are set
+	cfg.Args["--port"] = strconv.Itoa(int(cfg.Port))
+	switch cfg.Mode {
+	case ModeClient:
+		for name, test := range map[string]struct {
+			Value   any
+			Compare any
+		}{
+			"InfluxDB URL":          {cfg.InfluxDB.Url, nil},
+			"InfluxDB Token":        {cfg.InfluxDB.Token, ""},
+			"InfluxDB Organization": {cfg.InfluxDB.Org, ""},
+			"InfluxDB Bucket":       {cfg.InfluxDB.Bucket, ""},
+		} {
+			if test.Value == test.Compare {
+				return nil, fmt.Errorf("%s is not set", name)
+			}
 		}
+		cfg.Args["--client"] = string(cfg.Server)
+		cfg.Args["--json"] = ""
+	case ModeServer:
+		cfg.Args["--server"] = ""
+		cfg.Args["--one-off"] = ""
+	}
+
+	// Prepare full command to run
+	for key, value := range cfg.Args {
+		cfg.Command = append(cfg.Command, strings.Trim(fmt.Sprintf("%s=%s", key, value), "="))
 	}
 
 	// Return nil if everything went fine

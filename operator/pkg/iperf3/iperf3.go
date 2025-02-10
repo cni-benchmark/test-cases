@@ -9,8 +9,6 @@ import (
 	"net"
 	"os/exec"
 	"runtime"
-	"strconv"
-	"strings"
 	"time"
 
 	"github.com/docker/docker/pkg/parsers/kernel"
@@ -46,44 +44,14 @@ func WaitForServer(ctx context.Context, cfg *config.Config) error {
 	}
 }
 
-// BuildIperf3Command constructs the iperf3 command with appropriate arguments
-func BuildIperf3Command(cfg *config.Config) (*exec.Cmd, error) {
-	switch cfg.Mode {
-	case config.ModeServer:
-		cfg.Args["--server"] = ""
-	case config.ModeClient:
-		cfg.Args["--client"] = string(cfg.Server)
-	}
-
-	cfg.Args["--port"] = strconv.Itoa(int(cfg.Port))
-
-	argsList := []string{}
-	for key, value := range cfg.Args {
-		argsList = append(argsList, strings.Trim(fmt.Sprintf("%s=%s", key, value), "="))
-	}
-
-	return exec.Command("iperf3", argsList...), nil
-}
-
 // Run iperf3 and get JSON output
-func Run() (report *Report, err error) {
-	var cfg *config.Config
-	cfg, err = config.Build()
-	if err != nil {
-		return nil, fmt.Errorf("failed to build a config: %w", err)
-	}
-
+func Run(cfg *config.Config) (report *Report, err error) {
 	if err = WaitForServer(context.Background(), cfg); err != nil {
 		return nil, fmt.Errorf("failed waiting for server: %w", err)
 	}
 
-	// Build and execute iperf3 command
-	cmd, err := BuildIperf3Command(cfg)
-	if err != nil {
-		return nil, fmt.Errorf("failed to build command: %w", err)
-	}
-
 	// Execute iperf3
+	cmd := exec.Command(cfg.Command[0], cfg.Command[1:]...)
 	output, err := cmd.Output()
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute iperf3: %w", err)

@@ -61,6 +61,15 @@ var _ = Describe("Configuration", func() {
 		Expect(cfg.InfluxDB.Org).To(Equal("test-org"))
 		Expect(cfg.InfluxDB.Bucket).To(Equal("test-bucket"))
 		Expect(cfg.InfluxDB.Tags).To(Equal(config.InfluxDBTags{"some": "tag", "another": "one"}))
-		Expect(cfg.Args).To(Equal(Args{"--json": "", "--help": "", "key": "value"}))
+		Expect(cfg.Args).To(Equal(Args{
+			"--json":   "",
+			"--help":   "",
+			"key":      "value",
+			"--client": "example.com",
+			"--port":   "80",
+		}))
+		Expect(cfg.Command).To(ConsistOf(
+			"iperf3", "--json", "--help", "key=value", "--port=80", "--client=example.com",
+		))
 	})
 })

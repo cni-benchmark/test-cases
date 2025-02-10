@@ -7,8 +7,10 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 	"time"
 
+	"gopkg.in/yaml.v3"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
@@ -22,13 +24,35 @@ func main() {
 		log.Fatalf("Failed to build a config: %v", err)
 	}
 
+	yb, err := yaml.Marshal(cfg)
+	if err != nil {
+		log.Fatalf("Failed to YAML marshal a config: %v", err)
+	}
+	log.Printf("Configuration:\n  %s", strings.ReplaceAll(string(yb), "\n", "\n  "))
+
+	switch cfg.Mode {
+	case config.ModeClient:
+		runClient(cfg)
+	case config.ModeServer:
+		runServer(cfg)
+	}
+}
+
+func runServer(cfg *config.Config) {
+	log.Println("Starting server")
+	if _, err := iperf3.Run(cfg); err != nil {
+		log.Fatalf("Server mode error: %v", err)
+	}
+}
+
+func runClient(cfg *config.Config) {
 	// Create kubernetes client
-	config, err := clientcmd.BuildConfigFromFlags("", os.Getenv("KUBECONFIG"))
+	kubeconfig, err := clientcmd.BuildConfigFromFlags("", os.Getenv("KUBECONFIG"))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	clientset, err := kubernetes.NewForConfig(config)
+	clientset, err := kubernetes.NewForConfig(kubeconfig)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -63,7 +87,7 @@ func main() {
 			OnStartedLeading: func(ctx context.Context) {
 				log.Printf("Got leadership, starting benchmark")
 				var report *iperf3.Report
-				if report, err = iperf3.Run(); err != nil {
+				if report, err = iperf3.Run(cfg); err != nil {
 					log.Fatalf("Error running iperf: %v", err)
 				}
 				if err = iperf3.Analyze(cfg, report); err != nil {
