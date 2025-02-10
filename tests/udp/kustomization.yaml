@@ -11,7 +11,8 @@ patches:
         path: /spec/template/spec/containers/0/env/-
         value:
           name: ARGS
-          value: --udp
+          value: |-
+            --udp: ""
 configMapGenerator:
   - name: _
     literals:
