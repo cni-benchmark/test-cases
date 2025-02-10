@@ -4,11 +4,11 @@ resources:
   - ../cases
 patches:
   - target:
-      kind: Pod
+      kind: Job
       name: client
     patch: |-
       - op: add
-        path: /spec/containers/0/env/-
+        path: /spec/template/spec/containers/0/env/-
         value:
           name: ARGS
           value: --udp

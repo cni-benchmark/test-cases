@@ -4,23 +4,28 @@ metadata:
   name: client
 ---
 apiVersion: v1
-kind: Pod
+kind: Job
 metadata:
   name: client
   labels:
     mode: client
 spec:
-  restartPolicy: Never
-  serviceAccountName: client
-  enableServiceLinks: false
-  automountServiceAccountToken: true
-  containers:
-    - name: client
-      image: operator
-      env:
-        - name: MODE
-          value: client
-        - name: SERVER
-          value: server
-        - name: PORT
-          value: "5201"
+  template:
+    metadata:
+      labels:
+        mode: client
+    spec:
+      restartPolicy: Never
+      serviceAccountName: client
+      enableServiceLinks: false
+      automountServiceAccountToken: true
+      containers:
+        - name: client
+          image: operator
+          env:
+            - name: MODE
+              value: client
+            - name: SERVER
+              value: server
+            - name: PORT
+              value: "5201"
