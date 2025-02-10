@@ -197,8 +197,6 @@ func writeIntervalMetrics(writeAPI influxdb2api.WriteAPIBlocking, report *Report
 				"bytes":            interval.Sum.Bytes,
 				"duration_seconds": interval.Sum.DurationSeconds,
 				"retransmits":      interval.Sum.Retransmits,
-				"interval_start":   interval.Sum.Start,
-				"interval_end":     interval.Sum.End,
 			},
 			intervalStart,
 		)
