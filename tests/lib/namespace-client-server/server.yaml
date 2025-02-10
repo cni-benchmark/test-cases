@@ -19,10 +19,6 @@ spec:
               value: server
             - name: PORT
               value: "5201"
-          startupProbe:
-            periodSeconds: 1
-            tcpSocket:
-              port: tcp
           ports:
             - name: tcp
               containerPort: 5201
