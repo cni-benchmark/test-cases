@@ -12,3 +12,7 @@ labels:
     pairs:
       app.kubernetes.io/name: cni-benchmark
       app.kubernetes.io/instance: cni-benchmark
+images:
+  - name: operator
+    newName: ghcr.io/cni-benchmark/operator
+    newTag: latest
