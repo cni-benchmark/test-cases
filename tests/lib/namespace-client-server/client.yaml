@@ -29,3 +29,7 @@ spec:
               value: server
             - name: PORT
               value: "5201"
+            - name: TEST_CASE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
