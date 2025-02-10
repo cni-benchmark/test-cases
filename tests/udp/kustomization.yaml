@@ -32,17 +32,9 @@ replacements:
         options:
           delimiter: '-'
           index: 0
-      - select:
-          kind: ClusterRoleBinding
-        fieldPaths:
-          - .metadata.name
-        options:
-          delimiter: '-'
-          index: 0
       - select: {}
         reject:
           - kind: Namespace
-          - kind: ClusterRoleBinding
         fieldPaths:
           - .metadata.namespace
         options:
