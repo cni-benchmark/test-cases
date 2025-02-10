@@ -3,16 +3,16 @@ kind: Pod
 metadata:
   name: server
   labels:
-    iperf3: server
+    mode: server
 spec:
   containers:
     - name: server
-      image: iperf3
-      command: ["/bin/bash", "-euo", "pipefail", "-c"]
-      args:
-        - |-
-          iperf3 --version
-          iperf3 --server --port=${PORT:-5201} ${ARGS:-}
+      image: operator
+      env:
+        - name: MODE
+          value: server
+        - name: PORT
+          value: "5201"
       startupProbe:
         periodSeconds: 1
         tcpSocket:

@@ -25,28 +25,3 @@ repos:
       id: forbid-submodules
     - name: No mixed line ending
       id: mixed-line-ending
-- repo: local
-  hooks:
-    - id: go-mod-tidy
-      name: Go mod tidy
-      description: Install packages and clean lock
-      entry: sh -c 'cd operator && go mod tidy'
-      types: [go]
-      language: golang
-      pass_filenames: false
-    # https://github.com/golangci/golangci-lint/blob/master/.pre-commit-hooks.yaml
-    - id: golangci-lint-config-verify
-      name: Verify .golangci.yaml
-      description: Verifies the configuration file
-      entry: sh -c 'cd operator && golangci-lint config verify'
-      files: '\.golangci\.(?:yml|yaml|toml|json)'
-      language: golang
-      pass_filenames: false
-    - id: golangci-lint
-      name: Lint Go
-      description: Fast linters runner for Go. Note that only modified files are linted, so linters like 'unused' that need to scan all files won't work as expected.
-      entry: sh -c 'cd operator && golangci-lint run --new-from-rev HEAD --fix'
-      types: [go]
-      language: golang
-      require_serial: true
-      pass_filenames: false

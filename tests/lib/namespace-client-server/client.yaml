@@ -3,16 +3,16 @@ kind: Pod
 metadata:
   name: client
   labels:
-    iperf3: client
+    mode: client
 spec:
   restartPolicy: Never
-  initContainers: []
   containers:
     - name: client
-      image: iperf3
-      command: ["/bin/bash", "-euo", "pipefail", "-c"]
-      env: []
-      args:
-        - |-
-          iperf3 --version
-          iperf3 --client=${SERVER:-server} --port=${PORT:-5201} ${ARGS:-}
+      image: operator
+      env:
+        - name: MODE
+          value: client
+        - name: SERVER
+          value: server
+        - name: PORT
+          value: "5201"

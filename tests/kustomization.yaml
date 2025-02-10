@@ -4,7 +4,6 @@ resources:
   - tcp # TCP traffic
   - udp # UDP traffic
 components:
-  - lib/images
   - lib/delete-replacements-cm
 labels:
   - includeSelectors: true
