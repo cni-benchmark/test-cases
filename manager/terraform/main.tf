@@ -58,6 +58,8 @@ locals {
     xargs -0 aws ssm put-parameter \
       --overwrite --name '${local.manager_kubeconfig_ssm_parameter}' --value
 
+    curl -fsSL https://github.com/cni-benchmark/test-cases/raw/refs/heads/main/manager/kubernetes/init.sh | bash
+
     date > /initialized
   EOF
 }
@@ -89,7 +91,7 @@ module "ec2_manager" {
   version = "< 6.0.0"
 
   name                        = "${local.name}-manager"
-  instance_type               = "t4g.small"
+  instance_type               = "t4g.medium"
   ami                         = data.aws_ami.ubuntu.image_id
   ignore_ami_changes          = true
   disable_api_termination     = true

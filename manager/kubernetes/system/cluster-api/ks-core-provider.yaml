@@ -8,3 +8,5 @@ spec:
     substitute:
       KS_PATH: *path
       NAMESPACE: system
+  dependsOn:
+    - name: system
