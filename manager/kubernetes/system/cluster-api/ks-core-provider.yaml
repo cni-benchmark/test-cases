@@ -3,7 +3,7 @@ kind: Kustomization
 metadata:
   name: core-provider
 spec:
-  path: &path "${KS_PATH}/system/cluster-api/core-provider"
+  path: &path "${KS_PATH}/cluster-api/core-provider"
   postBuild:
     substitute:
       KS_PATH: *path
