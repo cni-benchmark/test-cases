@@ -46,6 +46,6 @@ repos:
         name: Build Kustomize
         entry: etc/kustomize-build-hook.sh
         language: script
-        files: ^tests/
-        types: [yaml]
+        files: ^(tests|manager/kubernetes)/
+        types: [file]
         pass_filenames: false

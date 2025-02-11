@@ -26,6 +26,10 @@ patches:
         prune: true
         timeout: 2m
         wait: false
+        sourceRef:
+          kind: GitRepository
+          name: test-cases
+          namespace: flux-system
 
   - target:
       kind: HelmRelease

@@ -4,6 +4,8 @@ namespace: default
 resources:
   - influxdb.yaml
   - grafana.yaml
+components:
+  - ../lib/flux-common
 replacements:
   - source:
       kind: HelmRelease

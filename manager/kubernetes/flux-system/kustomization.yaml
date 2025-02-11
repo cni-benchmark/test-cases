@@ -3,6 +3,9 @@ kind: Kustomization
 namespace: flux-system
 resources:
   - gotk-components.yaml
+  - git-repository.yaml
+components:
+  - ../lib/flux-common
 patches:
   - target:
       kind: Deployment
