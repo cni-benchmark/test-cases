@@ -54,7 +54,7 @@ locals {
       ./aws/install --bin-dir /usr/bin --update
     )
     cat /etc/rancher/k3s/k3s.yaml | \
-    sed -ri "s/127.0.0.1|localhost/$public_ip/g" | \
+    sed -r "s/127.0.0.1|localhost/$public_ip/g" | \
     xargs -0 aws ssm put-parameter \
       --overwrite --name '${local.manager_kubeconfig_ssm_parameter}' --value
 
