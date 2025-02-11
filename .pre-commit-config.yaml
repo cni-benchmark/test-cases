@@ -4,6 +4,21 @@
 
 fail_fast: true
 repos:
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.97.3
+    hooks:
+      - name: 'Terraform: lint'
+        id: terraform_tflint
+      - name: 'Terraform: format'
+        id: terraform_fmt
+      - name: 'Terraform: documentation'
+        id: terraform_docs
+        args:
+          - --hook-config=--path-to-file=README.md # Valid UNIX path. I.e. ../TFDOC.md or docs/README.md etc.
+          - --hook-config=--add-to-existing-file=true # Boolean. true or false
+          - --hook-config=--create-file-if-not-exist=true # Boolean. true or false
+      - name: 'Terraform: provider lock'
+        id: terraform_providers_lock
   - repo: https://github.com/zricethezav/gitleaks
     rev: v8.23.3
     hooks:
