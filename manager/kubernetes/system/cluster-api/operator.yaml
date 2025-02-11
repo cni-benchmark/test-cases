@@ -22,6 +22,8 @@ metadata:
   name: operator
 spec:
   releaseName: replaced
+  dependsOn:
+    - name: cert-manager
   chartRef:
     kind: HelmChart
     name: replaced
