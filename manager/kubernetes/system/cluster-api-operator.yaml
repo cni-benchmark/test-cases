@@ -1,0 +1,32 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: cluster-api-operator
+spec:
+  url: https://kubernetes-sigs.github.io/cluster-api-operator
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: cluster-api-operator
+spec:
+  chart: cluster-api-operator
+  version: "<0.17.0"
+  sourceRef:
+    kind: HelmRepository
+    name: cluster-api-operator
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cluster-api-operator
+spec:
+  releaseName: cluster-api-operator
+  chartRef:
+    kind: HelmChart
+    name: cluster-api-operator
+  values:
+    nameOverride: cluster-api-operator
+    fullnameOverride: cluster-api-operator
+    resources:
+      manager: {}

@@ -3,5 +3,6 @@ kind: Kustomization
 namespace: system
 resources:
   - cert-manager.yaml
+  - cluster-api-operator.yaml
 components:
   - ../lib/flux-common
