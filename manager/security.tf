@@ -38,3 +38,22 @@ resource "aws_security_group" "intranet" {
     create_before_destroy = true
   }
 }
+
+resource "aws_security_group" "admin" {
+  count       = length(var.admin_cidr_blocks) > 0 ? 1 : 0
+  name_prefix = "${local.name}-admin-"
+  description = "Full access from admin CIDRs"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress {
+    description = "Admin CIDRs"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = var.admin_cidr_blocks
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}

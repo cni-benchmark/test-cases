@@ -19,3 +19,9 @@ variable "vpc_cidr_block" {
   description = "VPC CIDR block"
   default     = "172.16.0.0/21"
 }
+
+variable "admin_cidr_blocks" {
+  type        = list(string)
+  description = "CIDRs to whitelist for SSH access"
+  default     = []
+}

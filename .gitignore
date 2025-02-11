@@ -40,3 +40,4 @@ terraform.rc
 .vscode
 tmp
 env.sh
+kubeconfig.yaml
