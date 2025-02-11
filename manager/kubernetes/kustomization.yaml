@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - ks.yaml
   - flux-system/ks.yaml
+  - system/ks.yaml
   - default/ks.yaml
 components:
   - lib/flux-common
