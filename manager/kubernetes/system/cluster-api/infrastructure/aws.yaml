@@ -4,5 +4,3 @@ metadata:
   name: aws
 spec:
   version: 2.7.1
-  fetchConfig:
-    url: https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases
