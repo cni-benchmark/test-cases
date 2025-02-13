@@ -2,6 +2,11 @@
 #  ││─┤│││
 #  ┘┘ ┘┘ ┘
 
+module "cluster_api_iam" {
+  source = "./cluster-api-iam"
+  name   = local.name
+}
+
 resource "aws_iam_role" "manager" {
   name_prefix        = "${local.name}-manager-"
   assume_role_policy = data.aws_iam_policy_document.assume_by_ec2.json
@@ -40,4 +45,14 @@ data "aws_iam_policy_document" "manager_ssm_put_parameter_kubeconfig" {
     actions   = ["ssm:PutParameter"]
     resources = [aws_ssm_parameter.manager_kubeconfig.arn]
   }
+}
+
+resource "aws_iam_role_policy_attachment" "cluster_api_controllers" {
+  role       = aws_iam_role.manager.name
+  policy_arn = module.cluster_api_iam.cloudformation.ControllersPolicyArn
+}
+
+resource "aws_iam_role_policy_attachment" "cluster_api_controllers_eks" {
+  role       = aws_iam_role.manager.name
+  policy_arn = module.cluster_api_iam.cloudformation.ControllersEKSPolicyArn
 }

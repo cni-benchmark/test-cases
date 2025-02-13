@@ -25,6 +25,7 @@
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_cidr"></a> [cidr](#module\_cidr) | hashicorp/subnets/cidr | < 2.0.0 |
+| <a name="module_cluster_api_iam"></a> [cluster\_api\_iam](#module\_cluster\_api\_iam) | ./cluster-api-iam | n/a |
 | <a name="module_ec2_manager"></a> [ec2\_manager](#module\_ec2\_manager) | terraform-aws-modules/ec2-instance/aws | < 6.0.0 |
 | <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-aws-modules/vpc/aws | < 6.0.0 |
 
@@ -36,6 +37,8 @@
 | [aws_iam_role.manager](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role_policy.manager_ssm_put_parameter_kubeconfig](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy) | resource |
 | [aws_iam_role_policy_attachment.AmazonSSMManagedInstanceCore](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.cluster_api_controllers](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.cluster_api_controllers_eks](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_key_pair.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/key_pair) | resource |
 | [aws_security_group.admin](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [aws_security_group.egress](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
