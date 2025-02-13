@@ -3,7 +3,8 @@ kind: Kustomization
 namePrefix: cluster-api-
 resources:
   - operator.yaml
-  - ks-core-provider.yaml
+  - ks-core.yaml
+  - ks-infrastructure.yaml
 replacements:
   - source:
       kind: HelmRepository
@@ -28,3 +29,12 @@ replacements:
           - .spec.releaseName
           - .spec.values.nameOverride
           - .spec.values.fullnameOverride
+  - source:
+      kind: Kustomization
+      name: core
+    targets:
+      - select:
+          kind: Kustomization
+          name: infrastructure
+        fieldPaths:
+          - .spec.dependsOn.[name=core].name

@@ -1,0 +1,8 @@
+apiVersion: operator.cluster.x-k8s.io/v1alpha2
+kind: InfrastructureProvider
+metadata:
+  name: aws
+spec:
+  version: 2.7.1
+  fetchConfig:
+    url: https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases

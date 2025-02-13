@@ -1,0 +1,13 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infrastructure
+spec:
+  path: &path "${KS_PATH}/cluster-api/infrastructure"
+  postBuild:
+    substitute:
+      KS_PATH: *path
+      NAMESPACE: system
+  dependsOn:
+    - name: core
+    - name: system
