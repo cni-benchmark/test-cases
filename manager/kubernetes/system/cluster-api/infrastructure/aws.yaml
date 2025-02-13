@@ -3,4 +3,4 @@ kind: InfrastructureProvider
 metadata:
   name: aws
 spec:
-  version: 2.7.1
+  version: v2.7.1

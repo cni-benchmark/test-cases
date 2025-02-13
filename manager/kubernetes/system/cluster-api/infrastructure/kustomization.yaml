@@ -3,3 +3,19 @@ kind: Kustomization
 namespace: ${NAMESPACE}
 resources:
   - aws.yaml
+secretGenerator:
+  - name: aws-configuration
+    literals:
+      - AWS_B64ENCODED_CREDENTIALS=# empty
+replacements:
+  - source:
+      kind: Secret
+      name: aws-configuration.+
+    targets:
+      - select:
+          kind: InfrastructureProvider
+          name: aws
+        fieldPaths:
+          - .spec.configSecret.name
+        options:
+          create: true
