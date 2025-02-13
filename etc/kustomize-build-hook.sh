@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-export ROOT=./tests
+export ROOT=./
 export KUSTOMIZE=""
 export LOG="$(mktemp)"
 export MAX_JOBS=100  # Adjust based on system capability
