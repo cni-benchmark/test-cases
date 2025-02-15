@@ -41,3 +41,4 @@ terraform.rc
 tmp
 env.sh
 kubeconfig.yaml
+talosconfig.yaml
