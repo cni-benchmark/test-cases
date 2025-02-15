@@ -52,3 +52,11 @@ spec:
           runAsNonRoot: true
           seccompProfile:
             type: RuntimeDefault
+        volumeMounts:
+          - name: tmp
+            mountPath: /tmp
+            readOnly: false
+      volumes:
+        - name: tmp
+          emptyDir:
+            sizeLimit: 10Mi
