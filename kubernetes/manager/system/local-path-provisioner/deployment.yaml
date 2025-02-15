@@ -9,7 +9,7 @@ spec:
       serviceAccountName: local-path-provisioner
       containers:
         - name: local-path-provisioner
-          image: rancher/local-path-provisioner
+          image: local-path-provisioner
           imagePullPolicy: IfNotPresent
           resources:
             limits:

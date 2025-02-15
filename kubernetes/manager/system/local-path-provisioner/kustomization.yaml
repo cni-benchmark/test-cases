@@ -20,3 +20,8 @@ configMapGenerator:
       - helperPod.yaml
     options:
       disableNameSuffixHash: true
+images:
+  - name: local-path-provisioner
+    newName: docker.io/rancher/local-path-provisioner
+    newTag: v0.0.31
+    digest: sha256:80496fdeb307541007621959aa13aed41d31db9cd2dc4167c19833e0bfa3878c
