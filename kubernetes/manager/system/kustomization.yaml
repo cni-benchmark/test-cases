@@ -3,5 +3,6 @@ kind: Kustomization
 namespace: ${NAMESPACE}
 resources:
   - cert-manager.yaml
+  - local-path-provisioner
 components:
   - ../lib/flux-common
