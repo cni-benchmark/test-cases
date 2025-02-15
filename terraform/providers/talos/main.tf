@@ -65,7 +65,8 @@ resource "talos_machine_bootstrap" "this" {
   depends_on = [
     talos_machine_configuration_apply.this
   ]
-  node                 = var.ec2.public_ip
+  endpoint             = var.ec2.public_ip
+  node                 = var.ec2.private_ip
   client_configuration = talos_machine_secrets.this.client_configuration
 }
 
@@ -73,6 +74,7 @@ resource "talos_cluster_kubeconfig" "this" {
   depends_on = [
     talos_machine_bootstrap.this
   ]
-  node                 = var.ec2.public_ip
+  endpoint             = var.ec2.public_ip
+  node                 = var.ec2.private_ip
   client_configuration = talos_machine_secrets.this.client_configuration
 }

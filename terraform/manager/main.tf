@@ -26,4 +26,6 @@ module "talos" {
       ]
     }
   })]
+
+  depends_on = [module.ec2]
 }
