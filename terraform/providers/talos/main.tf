@@ -29,11 +29,11 @@ resource "talos_machine_configuration_apply" "this" {
   client_configuration        = talos_machine_secrets.this.client_configuration
   machine_configuration_input = data.talos_machine_configuration.this.machine_configuration
   node                        = var.ec2.public_ip
-  config_patches = [
+  config_patches = concat([
     yamlencode({
       machine = {
         time = {
-          servers = ["169.254.169.123"]
+          servers = ["169.254.169.123"] # AWS NTP
         }
         certSANs = local.certSANs
         kubelet = {
@@ -56,7 +56,9 @@ resource "talos_machine_configuration_apply" "this" {
         }
       }
     })
-  ]
+    ],
+    var.config_patches
+  )
 }
 
 resource "talos_machine_bootstrap" "this" {

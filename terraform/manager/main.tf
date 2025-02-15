@@ -19,4 +19,11 @@ module "talos" {
 
   name = var.name
   ec2  = module.ec2.outputs
+  config_patches = [yamlencode({
+    cluster = {
+      extraManifests = [
+        "https://github.com/cni-benchmark/test-cases/raw/refs/heads/main/kubernetes/manager/install.yaml"
+      ]
+    }
+  })]
 }

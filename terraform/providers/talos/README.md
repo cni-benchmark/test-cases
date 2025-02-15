@@ -35,6 +35,7 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_config_patches"></a> [config\_patches](#input\_config\_patches) | List of valid YAMLs patches for machine configuration | `list(string)` | `[]` | no |
 | <a name="input_ec2"></a> [ec2](#input\_ec2) | EC2 module outputs | `any` | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | Name prefix | `string` | n/a | yes |
 
