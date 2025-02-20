@@ -28,22 +28,40 @@ spec:
   values:
     nameOverride: grafana
     fullnameOverride: grafana
+    deploymentStrategy:
+      type: Recreate
+    dnsPolicy: ClusterFirstWithHostNet
     service:
-      type: NodePort
-      nodePort: 30001
+      enabled: false
+      targetPort: 80 # Sets port in the container
     adminUser: admin
     adminPassword: admin
     datasources:
       datasources.yaml:
         apiVersion: 1
         datasources:
-          - name: InfluxDB
-            type: influxdb
-            access: proxy
-            url: http://influxdb
-            jsonData:
-              version: Flux
-              organization: primary
-              defaultBucket: primary
+          - name: PostgreSQL
+            type: postgres
+            url: postgresql:5432
+            user: username
             secureJsonData:
-              token: replaced
+              password: password
+            jsonData:
+              database: database
+              sslmode: disable
+              maxOpenConns: 200
+              maxIdleConns: 100
+              maxIdleConnsAuto: true
+              connMaxLifetime: 14400
+              postgresVersion: 1700 # 903=9.3, 904=9.4, 905=9.5, 906=9.6, 1000=10
+              timescaledb: false
+  postRenderers:
+    kustomize:
+      patches:
+        - target:
+            kind: Deployment
+          patch: |-
+            - op: replace
+              path: /spec/template/spec/hostNetwork
+              value: true
+            

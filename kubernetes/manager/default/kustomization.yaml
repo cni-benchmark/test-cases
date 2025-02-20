@@ -2,18 +2,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: ${NAMESPACE}
 resources:
-  - influxdb.yaml
+  - postgresql.yaml
   - grafana.yaml
 components:
   - ../lib/flux-common
-replacements:
-  - source:
-      kind: HelmRelease
-      name: influxdb
-      fieldPath: .spec.values.auth.admin.token
-    targets:
-      - select:
-          kind: HelmRelease
-          name: grafana
-        fieldPaths:
-          - .spec.values.datasources.datasources\.yaml.datasources.[name=InfluxDB].secureJsonData.token

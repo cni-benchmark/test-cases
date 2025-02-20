@@ -1,0 +1,36 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: OCIRepository
+metadata:
+  name: postgresql
+spec:
+  url: oci://registry-1.docker.io/bitnamicharts/postgresql
+  ref:
+    semver: '<17.0.0'
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: postgresql
+spec:
+  releaseName: postgresql
+  chartRef:
+    kind: OCIRepository
+    name: postgresql
+  values:
+    nameOverride: postgresql
+    fullnameOverride: postgresql
+    auth:
+      postgresPassword: postgres
+      username: username
+      password: password
+      database: database
+    primary:
+      resourcesPreset: none
+      updateStrategy:
+        type: Recreate
+      pdb:
+        create: false
+      hostNetwork: true
+      persistence:
+        enabled: true
+        size: 1Gi
