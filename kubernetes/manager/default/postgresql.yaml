@@ -26,8 +26,6 @@ spec:
       database: database
     primary:
       resourcesPreset: none
-      updateStrategy:
-        type: Recreate
       pdb:
         create: false
       hostNetwork: true
