@@ -48,6 +48,7 @@
 |------|-------------|
 | <a name="output_dns_ip"></a> [dns\_ip](#output\_dns\_ip) | kube-dns service IP |
 | <a name="output_kubeconfig"></a> [kubeconfig](#output\_kubeconfig) | Cluster kubeconfig |
+| <a name="output_machine_configuration"></a> [machine\_configuration](#output\_machine\_configuration) | Talos machine configuration |
 | <a name="output_pod_cidr"></a> [pod\_cidr](#output\_pod\_cidr) | var.pod\_cidr |
 | <a name="output_service_cidr"></a> [service\_cidr](#output\_service\_cidr) | var.service\_cidr |
 | <a name="output_talosconfig"></a> [talosconfig](#output\_talosconfig) | Cluster talosconfig |

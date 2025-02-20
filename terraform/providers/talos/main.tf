@@ -23,14 +23,16 @@ data "talos_machine_configuration" "this" {
 data "talos_client_configuration" "this" {
   cluster_name         = var.name
   client_configuration = talos_machine_secrets.this.client_configuration
-  nodes                = [var.ec2.private_ip]
   endpoints            = [var.ec2.public_ip]
+  nodes                = [var.ec2.private_ip]
 }
 
 resource "talos_machine_configuration_apply" "this" {
   client_configuration        = talos_machine_secrets.this.client_configuration
   machine_configuration_input = data.talos_machine_configuration.this.machine_configuration
-  node                        = var.ec2.public_ip
+  endpoint                    = var.ec2.public_ip
+  node                        = var.ec2.private_ip
+  apply_mode                  = "auto"
   config_patches = concat([
     yamlencode({
       machine = {
@@ -56,6 +58,28 @@ resource "talos_machine_configuration_apply" "this" {
         allowSchedulingOnControlPlanes = true
         apiServer = {
           certSANs = local.certSANs
+          admissionControl = [
+            {
+              name = "PodSecurity"
+              configuration = {
+                apiVersion = "pod-security.admission.config.k8s.io/v1alpha1"
+                kind       = "PodSecurityConfiguration"
+                defaults = {
+                  audit           = "restricted"
+                  audit-version   = "latest"
+                  enforce         = "baseline"
+                  enforce-version = "latest"
+                  warn            = "restricted"
+                  warn-version    = "latest"
+                }
+                exemptions = {
+                  namespaces     = ["default"]
+                  runtimeClasses = []
+                  usernames      = []
+                }
+              }
+            }
+          ]
         }
         network = {
           podSubnets     = [var.pod_cidr]

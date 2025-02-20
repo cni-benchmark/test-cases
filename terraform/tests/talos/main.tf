@@ -3,6 +3,7 @@
 #  ┘ ┘┘ ┘┘┘└┘
 
 locals {
+  name          = substr("${var.name}-talos-${each.key}", 0, 63)
   pod_cidr      = "10.244.0.0/16"
   service_cidr  = "10.96.0.0/12"
   talos_version = "1.9.4"
@@ -32,7 +33,7 @@ module "ec2" {
   for_each = data.kubectl_kustomize_documents.cni
   source   = "../../modules/ec2-instance"
 
-  name                   = substr("${var.name}-talos-${each.key}", 0, 63)
+  name                   = local.name
   instance_type          = "t4g.medium"
   ami                    = module.data.ami.talos_arm64.image_id
   vpc_subnet_id          = var.vpc_public_subnets[0]
@@ -44,7 +45,7 @@ module "talos" {
   for_each = data.kubectl_kustomize_documents.cni
   source   = "../../providers/talos"
 
-  name          = substr("${var.name}-${each.key}", 0, 63)
+  name          = local.name
   ec2           = module.ec2[each.key].outputs
   talos_version = local.talos_version
   pod_cidr      = local.pod_cidr
@@ -59,20 +60,6 @@ module "talos" {
             disabled = length(regexall("CNI_K8S_REQ: .*kubeProxyReplacement.*", join("---\n", each.value.documents))) > 0
           }
           inlineManifests = [
-            {
-              name = "DefaultNamespace"
-              contents = yamlencode({
-                apiVersion = "v1"
-                kind       = "Namespace"
-                metadata = {
-                  name = "default"
-                  labels = {
-                    "pod-security.kubernetes.io/enforce" = "privileged"
-                    "pod-security.kubernetes.io/audit"   = "privileged"
-                  }
-                }
-              })
-            },
             {
               name = "ConfigMaps"
               contents = join("\n---\n", [

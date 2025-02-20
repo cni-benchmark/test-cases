@@ -3,8 +3,6 @@ kind: Kustomization
 namespace: default
 resources:
   - ../../lib/cni-install
-generatorOptions:
-  disableNameSuffixHash: true
 configMapGenerator:
   - name: cni-install
     files:
@@ -13,4 +11,5 @@ configMapGenerator:
   - name: cni-info
     envs:
       - cni-info.env
-    
+    options:
+      disableNameSuffixHash: true

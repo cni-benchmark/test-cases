@@ -3,7 +3,8 @@ kind: Job
 metadata:
   name: cni-install
 spec:
-  backoffLimit: 5
+  backoffLimit: 1
+  ttlSecondsAfterFinished: 20
   template:
     spec:
       affinity:
@@ -23,6 +24,7 @@ spec:
       containers:
         - name: main
           image: dtzar/helm-kubectl
+          workingDir: /data
           command: ["/data/entrypoint.sh"]
           env:
             - name: KUBERNETES_SERVICE_HOST
