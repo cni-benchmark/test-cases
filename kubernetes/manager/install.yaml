@@ -25,6 +25,7 @@ metadata:
   namespace: kube-system
 spec:
   ttlSecondsAfterFinished: 1800
+  backoffLimit: 3
   template:
     spec:
       restartPolicy: Never
@@ -33,23 +34,28 @@ spec:
       enableServiceLinks: false
       containers:
       - name: kubectl
-        image: bitnami/kubectl
+        image: dtzar/helm-kubectl
         command: ["/bin/bash", "-euxo", "pipefail", "-c"]
         args:
           - |-
             kubectl apply -f 'https://github.com/cni-benchmark/test-cases/raw/refs/heads/main/kubernetes/manager/flux-system/gotk-components.yaml'
             kubectl apply -k 'https://github.com/cni-benchmark/test-cases.git/kubernetes/manager/flux-system?ref=main'
             kubectl apply -k 'https://github.com/cni-benchmark/test-cases.git/kubernetes/manager?ref=main'
+            exit 0
         resources:
           limits:
             cpu: "1.0"
             memory: 300Mi
+          requests:
+            cpu: 50m
+            memory: 50Mi
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
             drop: [ALL]
           readOnlyRootFilesystem: true
           runAsNonRoot: true
+          runAsUser: 65534
           seccompProfile:
             type: RuntimeDefault
         volumeMounts:

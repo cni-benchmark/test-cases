@@ -11,3 +11,18 @@ output "talosconfig" {
   description = "Cluster talosconfig"
   value       = data.talos_client_configuration.this.talos_config
 }
+
+output "pod_cidr" {
+  description = "var.pod_cidr"
+  value       = var.pod_cidr
+}
+
+output "service_cidr" {
+  description = "var.service_cidr"
+  value       = var.service_cidr
+}
+
+output "dns_ip" {
+  description = "kube-dns service IP"
+  value       = local.dns_ip
+}

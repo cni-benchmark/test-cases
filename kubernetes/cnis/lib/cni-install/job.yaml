@@ -1,0 +1,54 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cni-install
+spec:
+  backoffLimit: 5
+  template:
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: node-role.kubernetes.io/control-plane
+                    operator: Exists
+      tolerations:
+        - operator: Exists
+      restartPolicy: OnFailure
+      serviceAccountName: cni-install
+      automountServiceAccountToken: true
+      enableServiceLinks: false
+      hostNetwork: true
+      containers:
+        - name: main
+          image: dtzar/helm-kubectl
+          command: ["/data/entrypoint.sh"]
+          env:
+            - name: KUBERNETES_SERVICE_HOST
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.podIP
+            - name: KUBERNETES_SERVICE_PORT
+              value: "6443"
+          envFrom:
+            - configMapRef:
+                name: cni-info
+            - configMapRef:
+                name: k8s-info
+          securityContext:
+            privileged: true
+            readOnlyRootFilesystem: false
+            runAsNonRoot: false
+            runAsUser: 0
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      volumes:
+        - name: data
+          configMap:
+            name: cni-install
+            defaultMode: 0o755

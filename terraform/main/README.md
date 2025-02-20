@@ -23,6 +23,7 @@
 | <a name="module_cidr"></a> [cidr](#module\_cidr) | hashicorp/subnets/cidr | <2.0.0 |
 | <a name="module_data"></a> [data](#module\_data) | ../modules/data | n/a |
 | <a name="module_manager"></a> [manager](#module\_manager) | ../manager | n/a |
+| <a name="module_test_talos"></a> [test\_talos](#module\_test\_talos) | ../tests/talos | n/a |
 | <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-aws-modules/vpc/aws | <6.0.0 |
 
 ## Resources
@@ -38,6 +39,8 @@
 | [aws_vpc_security_group_ingress_rule.intranet](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_security_group_ingress_rule) | resource |
 | [local_sensitive_file.manager_kubeconfig](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/sensitive_file) | resource |
 | [local_sensitive_file.manager_talosconfig](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/sensitive_file) | resource |
+| [local_sensitive_file.test_talos_kubeconfig](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/sensitive_file) | resource |
+| [local_sensitive_file.test_talos_talosconfig](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/sensitive_file) | resource |
 
 ## Inputs
 

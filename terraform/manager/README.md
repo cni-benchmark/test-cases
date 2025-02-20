@@ -44,5 +44,6 @@
 | Name | Description |
 |------|-------------|
 | <a name="output_kubeconfig"></a> [kubeconfig](#output\_kubeconfig) | Cluster kubeconfig |
+| <a name="output_private_ip"></a> [private\_ip](#output\_private\_ip) | EC2 instance private IP |
 | <a name="output_talosconfig"></a> [talosconfig](#output\_talosconfig) | Cluster talosconfig |
 <!-- END_TF_DOCS -->

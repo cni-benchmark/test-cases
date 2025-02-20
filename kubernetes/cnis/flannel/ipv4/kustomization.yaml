@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: default
+resources:
+  - ../../lib/cni-install
+generatorOptions:
+  disableNameSuffixHash: true
+configMapGenerator:
+  - name: cni-install
+    files:
+      - entrypoint.sh
+  - name: cni-info
+    envs:
+      - cni-info.env
+    

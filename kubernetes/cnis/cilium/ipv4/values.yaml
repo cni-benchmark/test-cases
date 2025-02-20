@@ -1,0 +1,56 @@
+k8sServiceHost: env(K8S_SERVICE_HOSTNAME)
+k8sServicePort: env(K8S_SERVICE_PORT)
+operator:
+  enabled: true
+  tolerations:
+    - operator: Exists
+encryption:
+  enabled: false
+  type: wireguard
+identityAllocationMode: crd
+kubeProxyReplacement: true
+enableK8sEndpointSlice: true
+localRedirectPolicy: true
+autoDirectNodeRoutes: false
+devices: [eth+]
+healthChecking: true
+cni:
+  install: true
+ipam:
+  mode: cluster-pool
+  operator:
+    clusterPoolIPv4PodCIDRList: [env(K8S_POD_CIDR_IPV4)]
+    clusterPoolIPv4MaskSize: 25
+k8s:
+  requireIPv4PodCIDR: true
+  requireIPv6PodCIDR: false
+nodeIPAM:
+  enabled: true
+enableIPv4Masquerade: true
+enableIPv6Masquerade: false
+bpf:
+  masquerade: true
+  hostLegacyRouting: false
+ipv4:
+  enabled: true
+ipv6:
+  enabled: false
+hostServices:
+  enabled: true
+hostPort:
+  enabled: true
+nodePort:
+  enabled: true
+externalIPs:
+  enabled: true
+hostFirewall:
+  enabled: true
+securityContext:
+  privileged: true
+  capabilities:
+    ciliumAgent: [CHOWN,KILL,NET_ADMIN,NET_RAW,IPC_LOCK,SYS_ADMIN,SYS_RESOURCE,DAC_OVERRIDE,FOWNER,SETGID,SETUID]
+    cleanCiliumState: [NET_ADMIN,SYS_ADMIN,SYS_RESOURCE]
+cgroup:
+  autoMount:
+    enabled: false
+  hostRoot: /sys/fs/cgroup
