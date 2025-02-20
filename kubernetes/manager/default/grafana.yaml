@@ -56,12 +56,11 @@ spec:
               postgresVersion: 1700 # 903=9.3, 904=9.4, 905=9.5, 906=9.6, 1000=10
               timescaledb: false
   postRenderers:
-    kustomize:
-      patches:
-        - target:
-            kind: Deployment
-          patch: |-
-            - op: replace
-              path: /spec/template/spec/hostNetwork
-              value: true
-            
+    - kustomize:
+        patches:
+          - target:
+              kind: Deployment
+            patch: |-
+              - op: replace
+                path: /spec/template/spec/hostNetwork
+                value: true
