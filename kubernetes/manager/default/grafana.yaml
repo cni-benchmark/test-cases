@@ -35,7 +35,7 @@ spec:
       enabled: false
       targetPort: 80 # Sets port in the container
     env:
-      GF_DEFAULT_HTTP_PORT: "80"
+      GF_SERVER_HTTP_PORT: "80"
     adminUser: admin
     adminPassword: admin
     datasources:
