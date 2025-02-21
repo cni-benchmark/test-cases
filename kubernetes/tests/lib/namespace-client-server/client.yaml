@@ -10,6 +10,7 @@ metadata:
   labels:
     mode: client
 spec:
+  backoffLimit: 3
   template:
     metadata:
       labels:
