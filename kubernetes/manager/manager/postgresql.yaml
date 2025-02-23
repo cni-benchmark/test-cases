@@ -32,7 +32,9 @@ spec:
       persistence:
         enabled: true
         size: 1Gi
-      configuration: |-
+      networkPolicy:
+        enabled: false
+      extendedConfiguration: |-
         # DB Version: 17
         # OS Type: linux
         # DB Type: web
