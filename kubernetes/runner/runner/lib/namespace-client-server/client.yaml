@@ -23,6 +23,7 @@ spec:
       containers:
         - name: client
           image: operator
+          imagePullPolicy: IfNotPresent
           env:
             - name: MODE
               value: client

@@ -7,10 +7,10 @@ spec:
     mode: server
   ports:
     - name: tcp
-      port: 5201
+      port: ${i:=!!int} "${PORT:=5201}"
       protocol: TCP
       targetPort: tcp
     - name: udp
-      port: 5201
+      port: ${i:=!!int} "${PORT:=5201}"
       protocol: UDP
       targetPort: udp
