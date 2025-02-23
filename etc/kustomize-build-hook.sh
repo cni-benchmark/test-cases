@@ -63,7 +63,7 @@ build(){
   local file dir
   file="${1:?file is not set}"
   dir="$(dirname "$file")"
-  ${KUSTOMIZE} "$dir" >/dev/null 2>>"$LOG" || true
+  ${KUSTOMIZE} "$dir" >/dev/null 2>>"$LOG" || echo "error: failed to build $dir" >>"$LOG"
 }
 
 main
