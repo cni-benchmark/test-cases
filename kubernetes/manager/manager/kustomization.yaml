@@ -5,4 +5,4 @@ resources:
   - postgresql.yaml
   - grafana.yaml
 components:
-  - ../lib/flux-common
+  - ../../lib/flux-common

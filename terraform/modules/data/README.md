@@ -37,4 +37,5 @@ No inputs.
 | <a name="output_ami"></a> [ami](#output\_ami) | AMI for different OSes |
 | <a name="output_available_azs"></a> [available\_azs](#output\_available\_azs) | Available AZs names in the region |
 | <a name="output_region"></a> [region](#output\_region) | Current region name |
+| <a name="output_tests_install_manifest_url"></a> [tests\_install\_manifest\_url](#output\_tests\_install\_manifest\_url) | URL to manifest with tests-installer job |
 <!-- END_TF_DOCS -->

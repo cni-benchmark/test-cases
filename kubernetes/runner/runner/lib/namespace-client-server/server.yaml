@@ -18,15 +18,15 @@ spec:
             - name: MODE
               value: server
             - name: PORT
-              value: "5201"
+              value: ${s:=!!str} "${PORT:=5201}"
           startupProbe:
             periodSeconds: 1
             tcpSocket:
               port: tcp
           ports:
             - name: tcp
-              containerPort: 5201
+              containerPort: ${i:=!!int} ${PORT:=5201}
               protocol: TCP
             - name: udp
-              containerPort: 5201
+              containerPort: ${i:=!!int} ${PORT:=5201}
               protocol: UDP

@@ -13,6 +13,12 @@ variable "talos_version" {
   default     = "1.9.4"
 }
 
+variable "kubernetes_version" {
+  type        = string
+  description = "Kubernetes version"
+  default     = "1.32.2"
+}
+
 variable "ec2" {
   type        = any
   description = "EC2 module outputs"

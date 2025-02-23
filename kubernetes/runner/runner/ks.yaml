@@ -1,0 +1,22 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: runner
+  namespace: default
+spec:
+  path: &path "${KS_PATH}/runner"
+  postBuild:
+    substitute:
+      KS_PATH: *path
+      NAMESPACE: default
+    substituteFrom:
+      - kind: ConfigMap
+        name: os-info
+      - kind: ConfigMap
+        name: k8s-info
+      - kind: ConfigMap
+        name: cni-info
+      # Only this one is used for real substitution...
+      # ...while others are listed to wait for their creation
+      - kind: ConfigMap
+        name: mgr-info

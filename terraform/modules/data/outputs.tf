@@ -16,3 +16,8 @@ output "ami" {
   description = "AMI for different OSes"
   value       = data.aws_ami.this
 }
+
+output "tests_install_manifest_url" {
+  description = "URL to manifest with tests-installer job"
+  value       = "https://github.com/cni-benchmark/test-cases/raw/refs/heads/main/kubernetes/runner/install.yaml"
+}

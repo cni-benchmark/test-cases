@@ -27,10 +27,14 @@ spec:
             - name: MODE
               value: client
             - name: SERVER
-              value: server
+              value: "${SERVER:=server}"
             - name: PORT
-              value: "5201"
+              value: ${s:=!!str} "${PORT:=5201}"
             - name: TEST_CASE
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+            - name: DATABASE_URL
+              value: "${MGR_DATABASE_URL:=sqlite://:memory:?cache=shared}"
+            - name: DURATION
+              value: ${s:=!!str} "${MGR_TEST_DURATION:=60}"

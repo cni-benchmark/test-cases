@@ -13,11 +13,12 @@ locals {
 resource "talos_machine_secrets" "this" {}
 
 data "talos_machine_configuration" "this" {
-  cluster_name     = var.name
-  machine_type     = "controlplane"
-  cluster_endpoint = "https://${var.ec2.private_ip}:6443"
-  machine_secrets  = talos_machine_secrets.this.machine_secrets
-  talos_version    = var.talos_version
+  cluster_name       = var.name
+  machine_type       = "controlplane"
+  cluster_endpoint   = "https://${var.ec2.private_ip}:6443"
+  machine_secrets    = talos_machine_secrets.this.machine_secrets
+  talos_version      = var.talos_version
+  kubernetes_version = var.kubernetes_version
 }
 
 data "talos_client_configuration" "this" {

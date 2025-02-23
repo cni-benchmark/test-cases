@@ -37,6 +37,7 @@
 |------|-------------|------|---------|:--------:|
 | <a name="input_config_patches"></a> [config\_patches](#input\_config\_patches) | List of valid YAMLs patches for machine configuration | `list(string)` | `[]` | no |
 | <a name="input_ec2"></a> [ec2](#input\_ec2) | EC2 module outputs | `any` | n/a | yes |
+| <a name="input_kubernetes_version"></a> [kubernetes\_version](#input\_kubernetes\_version) | Kubernetes version | `string` | `"1.32.2"` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name prefix | `string` | n/a | yes |
 | <a name="input_pod_cidr"></a> [pod\_cidr](#input\_pod\_cidr) | Cluster Pod CIDR | `string` | `"10.244.0.0/16"` | no |
 | <a name="input_service_cidr"></a> [service\_cidr](#input\_service\_cidr) | Cluster Service CIDR | `string` | `"10.96.0.0/12"` | no |
