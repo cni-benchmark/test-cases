@@ -40,3 +40,13 @@ spec:
               value: "${MGR_DATABASE_URL:=sqlite://:memory:?cache=shared}"
             - name: DURATION
               value: ${s:=!!str} "${MGR_TEST_DURATION:=60}"
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: LEASE_ID
+              value: $(POD_NAMESPACE)/$(POD_NAME)
