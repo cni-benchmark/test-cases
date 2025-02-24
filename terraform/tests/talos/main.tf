@@ -8,8 +8,8 @@ locals {
   talos_version      = "1.9.4"
   kubernetes_version = "1.32.2"
   mgr_info = {
-    MGR_DATABASE_ADDRESS = var.database_url
-    MGR_TEST_DURATION    = tostring(var.test_duration)
+    MGR_DATABASE_URL  = var.database_url
+    MGR_TEST_DURATION = tostring(var.test_duration)
   }
   os_info = {
     OS_NAME    = "talos"

@@ -37,7 +37,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: DATABASE_URL
-              value: "${MGR_DATABASE_URL:=sqlite://:memory:?cache=shared}"
+              value: "${MGR_DATABASE_URL}"
             - name: DURATION
               value: ${s:=!!str} "${MGR_TEST_DURATION:=60}"
             - name: POD_NAMESPACE
