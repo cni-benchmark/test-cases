@@ -7,14 +7,20 @@ variable "name" {
   description = "Name prefix"
 }
 
-variable "manager_address" {
+variable "vpc_private_subnets" {
+  type        = list(string)
+  description = "VPC private subnets IDs"
+}
+
+variable "database_url" {
   type        = string
   description = "Manager IP address to use"
 }
 
-variable "vpc_public_subnets" {
-  type        = list(string)
-  description = "VPC public subnets IDs"
+variable "test_duration" {
+  type        = number
+  description = "Test duration in seconds"
+  default     = 120
 }
 
 variable "vpc_security_group_ids" {

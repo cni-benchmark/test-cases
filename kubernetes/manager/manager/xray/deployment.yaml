@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+spec:
+  template:
+    spec:
+      serviceAccountName: sa
+      automountServiceAccountToken: true
+      enableServiceLinks: false
+      containers:
+        - name: xray
+          image: xray
+          resources:
+            limits:
+              memory: 50Mi
+              cpu: 100m
+          env:
+            - name: PORT_SOCKS5
+              value: "1080"
+          ports:
+            - name: socks5
+              containerPort: &port 1080
+              protocol: TCP
+          startupProbe: &probe
+            tcpSocket:
+              port: *port
+          readinessProbe: *probe
+          livenessProbe: *probe
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              add: [NET_BIND_SERVICE]
+              drop: [ALL]
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 65534
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - name: config
+              subPath: config.json
+              mountPath: /etc/xray/config.json
+              readOnly: true
+            - name: tmp
+              mountPath: /tmp
+              readOnly: false
+      volumes:
+        - name: config
+          configMap:
+            name: configuration
+        - name: tmp
+          emptyDir:
+            sizeLimit: 10Mi

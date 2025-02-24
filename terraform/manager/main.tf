@@ -24,6 +24,20 @@ module "talos" {
       extraManifests = [
         "https://github.com/cni-benchmark/test-cases/raw/refs/heads/main/kubernetes/manager/install.yaml"
       ]
+      inlineManifests = [{
+        name = "ConfigMaps"
+        value = yamlencode({
+          apiVersion = "v1"
+          kind       = "ConfigMap"
+          metadata = {
+            name      = "vpc-info"
+            namespace = "default"
+          }
+          data = {
+            IPV4_CIDR = var.vpc_cidr_block
+          }
+        })
+      }]
     }
   })]
 

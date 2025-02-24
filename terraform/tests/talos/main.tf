@@ -8,7 +8,8 @@ locals {
   talos_version      = "1.9.4"
   kubernetes_version = "1.32.2"
   mgr_info = {
-    MGR_DATABASE_ADDRESS = "postgresql://username:password@${var.manager_address}:5432/database"
+    MGR_DATABASE_ADDRESS = var.database_url
+    MGR_TEST_DURATION    = var.test_duration
   }
   os_info = {
     OS_NAME    = "talos"
@@ -41,7 +42,7 @@ module "ec2" {
   name                   = substr("${var.name}-talos-${each.key}", 0, 63)
   instance_type          = "t4g.medium"
   ami                    = module.data.ami.talos_arm64.image_id
-  vpc_subnet_id          = var.vpc_public_subnets[0]
+  vpc_subnet_id          = var.vpc_private_subnets[0]
   vpc_security_group_ids = var.vpc_security_group_ids
   root_size              = 20
 }

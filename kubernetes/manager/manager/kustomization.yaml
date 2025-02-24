@@ -4,5 +4,6 @@ namespace: ${NAMESPACE}
 resources:
   - postgresql.yaml
   - grafana.yaml
+  - xray
 components:
   - ../../lib/flux-common
