@@ -22,7 +22,7 @@ patches:
         name: _
       spec:
         force: true
-        interval: 1h
+        interval: 10m
         prune: true
         timeout: 2m
         wait: false
@@ -39,7 +39,7 @@ patches:
       metadata:
         name: _
       spec:
-        interval: 1h
+        interval: 10m
         timeout: 2m
         install:
           crds: CreateReplace

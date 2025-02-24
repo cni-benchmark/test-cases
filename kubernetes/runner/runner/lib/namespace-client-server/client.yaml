@@ -10,8 +10,7 @@ metadata:
   labels:
     mode: client
 spec:
-  backoffLimit: 3
-  ttlSecondsAfterFinished: 10
+  backoffLimit: 10
   template:
     metadata:
       labels:
