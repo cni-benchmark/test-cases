@@ -29,8 +29,7 @@ module "ec2" {
   ami                         = var.ami
   ignore_ami_changes          = true
   disable_api_termination     = false
-  associate_public_ip_address = true
-  create_eip                  = true
+  associate_public_ip_address = var.associate_public_ip_address
 
   metadata_options = {
     http_endpoint               = "enabled",

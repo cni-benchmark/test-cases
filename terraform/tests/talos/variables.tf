@@ -7,9 +7,9 @@ variable "name" {
   description = "Name prefix"
 }
 
-variable "vpc_private_subnets" {
+variable "vpc_public_subnets" {
   type        = list(string)
-  description = "VPC private subnets IDs"
+  description = "VPC public subnets IDs"
 }
 
 variable "database_url" {

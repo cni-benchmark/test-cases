@@ -36,7 +36,7 @@
 | <a name="input_database_url"></a> [database\_url](#input\_database\_url) | Manager IP address to use | `string` | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | Name prefix | `string` | n/a | yes |
 | <a name="input_test_duration"></a> [test\_duration](#input\_test\_duration) | Test duration in seconds | `number` | `120` | no |
-| <a name="input_vpc_private_subnets"></a> [vpc\_private\_subnets](#input\_vpc\_private\_subnets) | VPC private subnets IDs | `list(string)` | n/a | yes |
+| <a name="input_vpc_public_subnets"></a> [vpc\_public\_subnets](#input\_vpc\_public\_subnets) | VPC public subnets IDs | `list(string)` | n/a | yes |
 | <a name="input_vpc_security_group_ids"></a> [vpc\_security\_group\_ids](#input\_vpc\_security\_group\_ids) | Extra security groups to use | `list(string)` | `[]` | no |
 
 ## Outputs

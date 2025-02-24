@@ -7,6 +7,12 @@ variable "name" {
   description = "Name prefix"
 }
 
+variable "associate_public_ip_address" {
+  type        = bool
+  description = "Works in private subnet as well"
+  default     = true
+}
+
 variable "ami" {
   type        = string
   description = "AMI ID"

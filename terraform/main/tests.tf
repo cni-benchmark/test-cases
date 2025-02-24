@@ -5,12 +5,13 @@
 module "test_talos" {
   source = "../tests/talos"
 
-  name                = local.name
-  database_url        = "postgresql://username:password@${module.manager.private_ip}:5432/database"
-  vpc_private_subnets = module.vpc.private_subnets
+  name               = local.name
+  database_url       = "postgresql://username:password@${module.manager.private_ip}:5432/database"
+  vpc_public_subnets = module.vpc.public_subnets
   vpc_security_group_ids = compact([
     aws_security_group.egress.id,
-    aws_security_group.intranet.id
+    aws_security_group.intranet.id,
+    try(aws_security_group.admin[0].id, ""),
   ])
 }
 
