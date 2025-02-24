@@ -43,3 +43,4 @@ env.sh
 kubeconfig.yaml
 talosconfig.yaml
 terraform/main/tests
+etc/data

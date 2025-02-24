@@ -1,0 +1,23 @@
+services:
+  postgresql:
+    image: postgres:17-alpine
+    restart: 'no'
+    shm_size: 128mb
+    environment:
+      POSTGRES_PASSWORD: &password postgres
+      POSTGRES_DB: &database database 
+    volumes:
+      - ./data:/var/lib/postgresql/data:rw
+      - ./example.sql:/docker-entrypoint-initdb.d/example.sql:ro
+
+  adminer:
+    image: adminer
+    restart: 'no'
+    environment:
+      ADMINER_SERVER: postgresql
+      ADMINER_USERNAME: postgres
+      ADMINER_PASSWORD: *password
+      ADMINER_DATABASE: *database
+      ADMINER_DRIVER: pgsql
+    ports:
+      - 8080:8080
