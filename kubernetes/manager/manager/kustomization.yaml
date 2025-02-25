@@ -6,3 +6,9 @@ resources:
   - grafana.yaml
 components:
   - ../../lib/flux-common
+configMapGenerator:
+  - name: grafana-dashboards
+    files:
+      - dashboard.json
+    options:
+      disableNameSuffixHash: true
